@@ -178,6 +178,8 @@ $(document).ready(function() {
                 return;
             }
 
+            console.log('user attack' + that.userAttack);
+
             //calculate new HP after counter attack
             if (that.userHP <= that.defenderCounter) {
                 that.userHP = 0;
@@ -186,6 +188,9 @@ $(document).ready(function() {
                 that.userHP -= that.defenderCounter;
                 attackValue = that.defenderCounter;
             }
+
+            console.log('defender hp' + that.defenderHP);
+            console.log('userHP' + that.userHP);
 
             //game comment update
             this.statusComment += ('<br/>' + this.userCharacterName + " was counter-attacked " + this.defenderName + " inflicting " + attackValue + " of damage!");
@@ -247,8 +252,11 @@ $(document).ready(function() {
 
         this.reset = function() {
 
+            this.statusElement.html('');
+
             //remove enemy class, move enemy and defender back to character list at top
             $(this.enemies).removeClass('enemy');
+            $(this.enemies).removeClass('defender');
             $(this.userCharacter).removeClass('user');
             $(this.defender).removeClass('defender');
 
@@ -260,6 +268,7 @@ $(document).ready(function() {
             $('#enemy-array').empty();
 
             $('#character-array').append(currentGame.enemies);
+            $('#character-array').removeClass('user')
 
             //reset all HP
             this.showHP();
@@ -279,10 +288,10 @@ $(document).ready(function() {
             this.started = false;
 
             //player attributes
-            this.userHP = '';
-            this.userAttack = '';
-            this.defenderHP = '';
-            this.defenderCounter = '';
+            this.userHP = 0;
+            this.userAttack = 0;
+            this.defenderHP = 0;
+            this.defenderCounter = 0;
             this.attackResult = '';
             this.statusComment = '';
             this.statusElement = '';
