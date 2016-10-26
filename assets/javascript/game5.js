@@ -4,6 +4,7 @@ $(document).ready(function() {
 
     // var currentGame;
     var currentGame = new newGame();
+    addListeners();
 
     function newGame() {
         //game status and character triggers
@@ -290,6 +291,9 @@ $(document).ready(function() {
             //CHANGE VISBILE CONTENTS
             this.visibleContents();
 
+            //ensure listeners remain
+            addListeners();
+
             return;
         };
 
@@ -319,32 +323,32 @@ $(document).ready(function() {
         };
     }
 
+    function addListeners () {
+        $('.character').on('click', function () {
 
-    $('.character').on('click', function () {
+            if (currentGame.started === true){
+                currentGame.assignDefender($(this));
+            }
+            else {
+                currentGame.startGame($(this));
+            }
+      
+        });
 
-        if (currentGame.started === true){
-            currentGame.assignDefender($(this));
-        }
-        else {
-            currentGame.startGame($(this));
-        }
-  
-    });
+        $('#attack').on('click', function() {
 
-    $('#attack').on('click', function() {
+            console.log('attack click');
+            currentGame.attack();
 
-        console.log('attack click');
-        currentGame.attack();
-
-    });
+        });
 
 
-    $('#reset').on('click', function() {
+        $('#reset').on('click', function() {
 
-        currentGame.reset();
+            currentGame.reset();
 
-    });
-
+        });
+    }
 
 });
 
