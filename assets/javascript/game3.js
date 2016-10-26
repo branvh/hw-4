@@ -177,7 +177,6 @@ $(document).ready(function() {
 
             //launch counterAttack of defender isn't dead
             if (!this.defender){
-                console.log('not launching counter - dead');
                 return;
             }
             else {
@@ -250,7 +249,7 @@ $(document).ready(function() {
                 that.statusElement.html('You won this round! Pick a new enemy and try to become the master of the galaxy...');
 
                 //make person pick another defender prior to being able to attack again
-                that.ableToAttack = true;
+                that.ableToAttack = false;
 
             } //check to see if defender was defeated and no more defenders exist
             
@@ -266,6 +265,10 @@ $(document).ready(function() {
             $(this.enemies).removeClass('enemy');
             $(this.userCharacter).removeClass('user');
             $(this.defender).removeClass('defender');
+
+            $('.enemy').removeClass('enemy');
+            $('.user').removeClass('user');
+            $('.defender').removeClass('defender');
 
             $('#defender-array').empty();
             $('#enemy-array').empty();
@@ -332,7 +335,7 @@ $(document).ready(function() {
     }
 
 
-    $('.character').on('click', function (e) {
+    $('.character').on('click', function () {
 
         if (currentGame.started === true){
             currentGame.assignDefender($(this));
