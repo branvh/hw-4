@@ -1,69 +1,40 @@
 /*MISC TO DO LIST TO TWEAK GAME
-	
-	-Defender background coloring
-	-Reset button moves to right side of defender
-	-Keep getting type errors of undefined
-	-Best way to reset variables to blank
-	-Am I setting copies of DOM objects with assignment or creating a pointer?
-	-Keep order of defenders same under reset and original load
-	-Fix reset: need to let you pick new char if won...else reset?
+    
+    -Defender background coloring
+    -Reset button moves to right side of defender
+    -Keep getting type errors of undefined
+    -Best way to reset variables to blank
+    -Am I setting copies of DOM objects with assignment or creating a pointer?
+    -Keep order of defenders same under reset and original load
+    -Fix reset: need to let you pick new char if won...else reset?
 
-	STOPPING POINT = TRYING TO REMOVE DEFENDER FROM ENEMIES VARIABLE
-	CREATE CHARACTER ARRAY FOR STORAGE TO RESET..
+    STOPPING POINT = TRYING TO REMOVE DEFENDER FROM ENEMIES VARIABLE
+    CREATE CHARACTER ARRAY FOR STORAGE TO RESET..
+
+    -If no defender selected, can't attack - don't update attack value
 
 */
 
+var currentGame;
+
 $(document).ready(function() {
 
-    var currentGame;
-    var started;
+    // var currentGame;
+    currentGame = new newGame();
 
-
-    $('.character').click(function() {
-
-        //create a new game only not started
-        if (!started) {
-
-            //no need for global var - all listeners, etc start here
-            currentGame = new newGame($(this));
-            currentGame.startGame();
-
-        }
-
-        $('.enemy').click(function() {
-
-            if (!currentGame.defender) {
-                currentGame.assignDefender($(this));
-            }
-
-        });
-
-        $('#attack').click(currentGame.attack.bind(currentGame));
-
-        // if (currentGame.ableToAttack){
-        // 	currentGame.attack().bind(currentGame);
-        // }
-
-
-        $('#reset').click(currentGame.reset.bind(currentGame));
-
-        // currentGame.reset().bind(currentGame);
-
-
-    });
-
-
-
-    function newGame(user) {
+    function newGame() {
         //game status and character triggers
-        this.userCharacter = user;
+        this.userCharacter;
         this.userCharacterName;
+        //store characters for reset
+        this.charArray;
         // this.ableToAttack;
         this.enemies;
         this.defender;
         this.defenderName;
         this.defenderSelected;
-        this.ableToAttack;
+        this.ableToAttack = false;
+        this.started = false;
 
         //player attributes
         this.userHP;
@@ -73,15 +44,31 @@ $(document).ready(function() {
         this.attackResult;
         this.statusComment;
         this.statusElement;
+        this.winCounter = 0;
 
         //gameplay functions
-        this.startGame = function() {
+        this.startGame = function(user) {
+
+            var that = this;
+
+            //if game already started, ignore, otherwise set started
+            if (this.started === true) {
+                return;
+            } else {
+                this.started = true;
+            }
+
+            //update user character
+            this.userCharacter = user;
+
+            //create copy for reset
+            this.charArray = $('.character');
 
             //show HP
             this.showHP();
 
             //assign user-character class
-            this.userCharacter.toggleClass('user');
+            this.userCharacter.addClass('user');
 
             //log user character's name
             this.userCharacterName = this.userCharacter.attr('id');
@@ -103,9 +90,8 @@ $(document).ready(function() {
 
         this.assignEnemy = function() {
 
-
             //select siblings and toggle enemy class
-            this.userCharacter.siblings().toggleClass('enemy');
+            this.userCharacter.siblings().addClass('enemy');
 
             //assign siblings to the enemies variable
             this.enemies = $('.enemy');
@@ -120,12 +106,20 @@ $(document).ready(function() {
 
         this.assignDefender = function(defender) {
 
+            //only fire first time defender clicked on
+            if (this.defender){
+                return;
+            }
+            //make sure that defender isn't also the user
+            if ($(defender).attr('id') === $(this.userCharacter).attr('id')){
+                return;
+            }
             //assign defender 
             this.defender = defender;
             this.defenderName = this.defender.attr('id');
 
             //toggle defender class for selections
-            this.defender.addClass('defender');
+            this.defender.addClass('defender')
 
             //assign defender attributes to start game
             this.defenderHP = parseInt(this.defender.attr('data-hp'), 10);
@@ -140,6 +134,8 @@ $(document).ready(function() {
             //move defender down
             $('#defender-array').append(this.defender);
 
+            this.statusElement.html('');
+
         };
 
         this.attack = function() {
@@ -150,9 +146,8 @@ $(document).ready(function() {
             //address this scope closure issues
             var that = this;
 
-
             //break out of function if attack isn't a valid choice yet
-            if (!that.ableToAttack) {
+            if (that.ableToAttack === false) {
                 return;
             }
 
@@ -160,18 +155,12 @@ $(document).ready(function() {
             if (that.defenderHP <= that.userAttack) {
                 that.defenderHP = 0;
                 attackValue = that.defenderHP;
-                console.log('defender hp < user attack value scenario');
-                console.log('defender hp' + that.defenderHP);
             } else {
                 that.defenderHP -= that.userAttack;
-                console.log('defender hp' + that.defenderHP);
                 attackValue = that.userAttack;
-                console.log('defender hp' + that.defenderHP);
+
                 //increment user attack strength by 6 each round
                 that.userAttack += 6;
-
-                //console log checks
-                console.log('attak value ' + attackValue + ' next atk val' + that.userAttack);
             }
 
             //game comment update
@@ -187,7 +176,13 @@ $(document).ready(function() {
             this.winCheck();
 
             //launch counterAttack of defender isn't dead
-            this.counterAttack();
+            if (!this.defender){
+                console.log('not launching counter - dead');
+                return;
+            }
+            else {
+                this.counterAttack();
+            }
 
         };
 
@@ -195,6 +190,10 @@ $(document).ready(function() {
 
             var attackValue;
             var that = this;
+
+            if (that.ableToAttack === false){
+                return;
+            }
 
             //calculate new HP after counter attack
             if (that.userHP <= that.defenderCounter) {
@@ -206,7 +205,6 @@ $(document).ready(function() {
             }
 
             //game comment update
-
             this.statusComment += ('<br/>' + this.userCharacterName + " was counter-attacked " + this.defenderName + " inflicting " + attackValue + " of damage!");
 
             //display comment to screen
@@ -224,6 +222,7 @@ $(document).ready(function() {
 
             //remember to toggle defender selected to enable new choice..
             var that = this;
+
             //check for current match victory
             if (that.userHP === 0) {
                 that.statusElement.html('You lost, press reset to try again!');
@@ -232,79 +231,83 @@ $(document).ready(function() {
             } //remove defeated defender
             else if (that.defenderHP === 0) {
 
+                //update win counter
+                that.winCounter++;
+
                 //remove defender
                 $('.defender').remove();
 
                 //this will enable another defender to be selected
-                that.defender = '';
-
-                //remove item from enemies array
-                $(that.enemies).filter('.defender').remove();
+                currentGame.defender = '';
 
                 //reset HP values
                 that.showHP();
+
+                //reset user HP
+                that.userHP = parseInt(this.userCharacter.attr('data-hp'), 10);
+
+                //status update for win 
+                that.statusElement.html('You won this round! Pick a new enemy and try to become the master of the galaxy...');
 
                 //make person pick another defender prior to being able to attack again
                 that.ableToAttack = true;
 
             } //check to see if defender was defeated and no more defenders exist
-            else if (that.defenderHP === 0 && !that.enemies) {
+            
+            if (that.winCounter === 3) {
 
                 that.statusElement.html('You are the master of the galaxy!!');
-
-            } else if (that.defenderHP === 0 && that.enemies) {
-
-                that.statusElement.html('You won this round! Pick a new enemy and try to become the master of the galaxy...');
-
             }
-
-
         };
 
         this.reset = function() {
 
             //remove enemy class, move enemy and defender back to character list at top
             $(this.enemies).removeClass('enemy');
-            $('#character-array').append(this.enemies);
-            $('#character-array').append(this.defender);
+            $(this.userCharacter).removeClass('user');
+            $(this.defender).removeClass('defender');
+
+            $('#defender-array').empty();
+            $('#enemy-array').empty();
+
+            $('#character-array').append(currentGame.enemies);
 
             //reset all HP
             this.showHP();
 
-            //remove user character status
-            $(this.userCharacter).removeClass('user');
-
             //reset all current game variables
 
-            this.userCharacter;
-            this.userCharacterName;
-            this.enemies;
-            this.defender;
-            this.defenderName;
-            this.defenderSelected;
-            this.userHP;
-            this.userAttack;
-            this.defenderHP;
-            this.defenderCounter;
-            this.attackResult;
-            this.statusComment;
-            this.statusElement;
+            this.userCharacter = '';
+            this.userCharacterName = '';
+            //store characters for reset
+            this.charArray = '';
+            // this.ableToAttack;
+            this.enemies = '';
+            this.defender = '';
+            this.defenderName = '';
+            this.defenderSelected = '';
+            this.ableToAttack = false;
+            this.started = false;
 
-            //destroy existing game
-            currentGame = '';
-
-            //started turn to false
-            started = false;
+            //player attributes
+            this.userHP = '';
+            this.userAttack = '';
+            this.defenderHP = '';
+            this.defenderCounter = '';
+            this.attackResult = '';
+            this.statusComment = '';
+            this.statusElement = '';
+            this.winCounter = 0;
 
             //CHANGE VISBILE CONTENTS
             this.visibleContents();
 
-
+            return;
         };
 
         this.visibleContents = function() {
 
-            if (started) {
+            if (currentGame.started === true) {
                 $('#fight-section').css('visibility', 'initial');
                 $('#enemy-list').css('visibility', 'initial');
                 $('#defender-list').css('visibility', 'initial');
@@ -328,4 +331,32 @@ $(document).ready(function() {
         };
     }
 
+
+    $('.character').on('click', function (e) {
+
+        if (currentGame.started === true){
+            currentGame.assignDefender($(this));
+        }
+        else {
+            currentGame.startGame($(this));
+        }
+  
+    });
+
+    $('#attack').on('click', function() {
+
+        console.log('attack click');
+        currentGame.attack();
+
+    });
+
+
+    $('#reset').on('click', function() {
+
+        currentGame.reset();
+
+    });
+
+
 });
+

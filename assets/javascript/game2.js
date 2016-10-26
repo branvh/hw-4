@@ -13,50 +13,16 @@
 
 */
 
+var currentGame;
+
 $(document).ready(function() {
 
-    var currentGame;
-    var started;
+    // var currentGame;
+    currentGame = new newGame();
 
-
-    $('.character').click(function() {
-
-        //create a new game only not started
-        if (!started) {
-
-            //no need for global var - all listeners, etc start here
-            currentGame = new newGame($(this));
-            currentGame.startGame();
-
-        }
-
-        $('.enemy').click(function() {
-
-            if (!currentGame.defender) {
-                currentGame.assignDefender($(this));
-            }
-
-        });
-
-        $('#attack').click(currentGame.attack.bind(currentGame));
-
-        // if (currentGame.ableToAttack){
-        // 	currentGame.attack().bind(currentGame);
-        // }
-
-
-        $('#reset').click(currentGame.reset.bind(currentGame));
-
-        // currentGame.reset().bind(currentGame);
-
-
-    });
-
-
-
-    function newGame(user) {
+    function newGame() {
         //game status and character triggers
-        this.userCharacter = user;
+        this.userCharacter;
         this.userCharacterName;
         // this.ableToAttack;
         this.enemies;
@@ -64,6 +30,7 @@ $(document).ready(function() {
         this.defenderName;
         this.defenderSelected;
         this.ableToAttack;
+        this.started = false;
 
         //player attributes
         this.userHP;
@@ -75,13 +42,24 @@ $(document).ready(function() {
         this.statusElement;
 
         //gameplay functions
-        this.startGame = function() {
+        this.startGame = function(user) {
+
+            //if game already started, ignore, otherwise set started
+            if (this.started === true){
+                return;
+            }
+            else {
+                this.started = true;
+            }
+
+            //update user character
+            this.userCharacter = user;
 
             //show HP
             this.showHP();
 
             //assign user-character class
-            this.userCharacter.toggleClass('user');
+            this.userCharacter.addClass('user');
 
             //log user character's name
             this.userCharacterName = this.userCharacter.attr('id');
@@ -103,7 +81,7 @@ $(document).ready(function() {
 
         this.assignEnemy = function() {
 
-
+ console.log('assign enemy entered');
             //select siblings and toggle enemy class
             this.userCharacter.siblings().toggleClass('enemy');
 
@@ -113,13 +91,15 @@ $(document).ready(function() {
             //move enemy list to proper DOM section and then remove
             $('#enemy-array').append(this.enemies);
 
+console.log(this.enemies.length + ' of enemies');
+
             //make rest of document visible
             this.visibleContents();
 
         };
 
         this.assignDefender = function(defender) {
-
+console.log('assigned defender');
             //assign defender 
             this.defender = defender;
             this.defenderName = this.defender.attr('id');
@@ -144,6 +124,7 @@ $(document).ready(function() {
 
         this.attack = function() {
 
+console.log('launched attack');
             //local var to track attack value
             var attackValue;
 
@@ -193,6 +174,7 @@ $(document).ready(function() {
 
         this.counterAttack = function() {
 
+console.log('entered counter attack');
             var attackValue;
             var that = this;
 
@@ -328,4 +310,42 @@ $(document).ready(function() {
         };
     }
 
+
+    $('.character').one('click',function() {
+
+            currentGame.startGame.call(currentGame, $(this));
+            console.log('registered .character click');
+
+    });
+
+                $('.enemy').on('click',function(event) {
+
+            if (!currentGame.defender) {
+                
+                event.stopPropagation();
+                console.log('enemy clicked');
+                currentGame.assignDefender($(this));
+            }
+
+            });
+
+            $('#attack').on('click', function (event) {
+
+                event.stopPropagation();
+                console.log('attack click');
+                currentGame.attack();
+
+            });
+
+
+            $('#reset').on('click', function (event){
+
+                currentGame.reset();
+
+            });
+
+
 });
+
+
+//start w/ an init function and call to reset

@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title>Star Wars!</title>
-
-	<!-- Latest compiled and minified CSS & JS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-	<link rel="stylesheet" href="assets/css/style.css">
-
+    <title>Star Wars!</title>
+    <!-- Latest compiled and minified CSS & JS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="assets/css/style1.css">
 </head>
-<body>
 
-<!-- 
+<body>
+    <!-- 
 * When the game starts, the player will choose a character by clicking on the fighter's picture. The player will fight as that character for the rest of the game.
 
 * The player must then defeat all of the remaining fighters. Enemies should be moved to a different area of the screen.
@@ -25,80 +23,66 @@
 * The player will now be able to click the `attack` button.
     * Whenever the player clicks `attack`, their character damages the defender. The opponent will lose `HP` (health points). These points are displayed at the bottom of the defender's picture. 
     * The opponent character will instantly counter the attack. When that happens, the player's character will lose some of their `HP`. These points are shown at the bottom of the player character's picture. -->
-
-<div class="container">
-	<div class="row" id="character-selection">
-		<h2 id="character-list-headline">Select a character:</h2>
-			<div class="character-selection-list">
-				<ul class="thumbnails character-array">
-				  <li class="span2 character" id="Han-Solo" data-hp='100' data-attack='20' data-counter='15'>
-				    <div class="thumbnail">
-				  		<h3 class="text-center">Han Solo</h3>
-				      	<img src="assets/images/han-solo.png" alt="Han Solo" class="rounded img">
-				      	<p class="hp text-center"></p>	
-				    </div>
-				  </li>
-
-				  <li class="span4 character" id="Darth-Vader" data-hp='100' data-attack='20' data-counter='15'>
-				    <div class="thumbnail">
-				  		<h3 class="text-center">Darth-Vader</h3>
-				      	<img src="assets/images/darth-vader.png" alt="Darth Vader">
-				      	<p class="hp text-center"></p>
-				    </div>
-				  </li>
-
-				  <li class="span4 character" id="Rey" data-hp='100' data-attack='20' data-counter='15'>
-				    <div class="thumbnail">
-				  		<h3 class="text-center">Rey</h3>
-				      	<img src="assets/images/rey-solo.png" alt="Rey">
-				      	<p class="hp text-center"></p>
-				    </div>
-				  </li>
-
-				  <li class="span4 character" id="Storm-Trooper" data-hp='100' data-attack='20' data-counter='15'>
-				    <div class="thumbnail">
-				  		<h3 class="text-center">Storm Trooper</h3>
-				      	<img src="assets/images/storm-trooper.png" alt="Storm Trooper">
-				      	<p class="hp text-center"></p>
-				    </div>
-				  </li>
-				</ul>
-			</div>
-	</div>
-	
-	<div class="row">
-		<div id="fight-section">
-			
-			<h2 id="fight-headline">Fight Section:</h2>
-			<button class="btn btn-default" id="attack">Attack!</button>
-
-		</div>
-	</div>
-
-	<div class="row" id="enemy-list">
-		<h2 id="enemy-list-headline">Enemies to Attack:</h2>
-			<div class="character-selection-list">
-				<ul class="thumbnails character-array" id="enemy-array">
-			
-				</ul>
-			</div>
-	</div>
-
-	<div class="row" id="defender-list">
-		<h2 id="enemy-list-headline">Defender:</h2>
-			<div class="character-selection-list">
-				<ul class="thumbnails character-array" id='defender-array'>
-			
-				</ul>
-				<p id="game-comment"></p>
-			</div>
-		<button class="btn btn-default" id="reset">Reset</button>
-	</div>
-</div>
-
-
-<script type="text/javascript" src="assets/javascript/game.js"></script>
-
-
+    <div class="container">
+        <div class="row" id="character-selection">
+            <h2 id="character-list-headline">Select a character:</h2>
+            <div class="character-selection-list">
+                <ul class="thumbnails" id="character-array">
+                    <li class="span2 character" id="Han-Solo" data-hp='100' data-attack='20' data-counter='15'>
+                        <div class="thumbnail">
+                            <h3 class="text-center">Han Solo</h3>
+                            <img src="assets/images/han-solo.png" alt="Han Solo" class="rounded img">
+                            <p class="hp text-center"></p>
+                        </div>
+                    </li>
+                    <li class="span4 character" id="Darth-Vader" data-hp='100' data-attack='20' data-counter='15'>
+                        <div class="thumbnail">
+                            <h3 class="text-center">Darth-Vader</h3>
+                            <img src="assets/images/darth-vader.png" alt="Darth Vader">
+                            <p class="hp text-center"></p>
+                        </div>
+                    </li>
+                    <li class="span4 character" id="Rey" data-hp='100' data-attack='20' data-counter='15'>
+                        <div class="thumbnail">
+                            <h3 class="text-center">Rey</h3>
+                            <img src="assets/images/rey-solo.png" alt="Rey">
+                            <p class="hp text-center"></p>
+                        </div>
+                    </li>
+                    <li class="span4 character" id="Storm-Trooper" data-hp='100' data-attack='20' data-counter='15'>
+                        <div class="thumbnail">
+                            <h3 class="text-center">Storm Trooper</h3>
+                            <img src="assets/images/storm-trooper.png" alt="Storm Trooper">
+                            <p class="hp text-center"></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div id="fight-section">
+                <h2 id="fight-headline">Fight Section:</h2>
+                <button class="btn btn-default" id="attack">Attack!</button>
+            </div>
+        </div>
+        <div class="row" id="enemy-list">
+            <h2 id="enemy-list-headline">Enemies to Attack:</h2>
+            <div class="character-selection-list">
+                <ul class="thumbnails character-array" id="enemy-array">
+                </ul>
+            </div>
+        </div>
+        <div class="row" id="defender-list">
+            <h2 id="enemy-list-headline">Defender:</h2>
+            <div class="character-selection-list">
+                <ul class="thumbnails character-array" id='defender-array'>
+                </ul>
+                <p id="game-comment"></p>
+            </div>
+            <button class="btn btn-default" id="reset">Reset</button>
+        </div>
+    </div>
+    <script type="text/javascript" src="assets/javascript/game3.js"></script>
 </body>
+
 </html>

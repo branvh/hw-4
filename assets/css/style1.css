@@ -29,6 +29,8 @@ ul {
 	float: left;
 	margin-right: 10px;
 	list-style-type: none;
+	overflow: hidden;
+	cursor: pointer;
 }
 
 .character:hover, .enemy:hover {
